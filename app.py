@@ -1,61 +1,34 @@
 import os
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 from flask_mysqldb import MySQL
 
 app = Flask(__name__)
 
 # Configure MySQL from environment variables
-app.config['MYSQL_HOST'] = os.environ.get('DB_HOST')
-app.config['MYSQL_USER'] = os.environ.get('DB_USERNAME')
-app.config['MYSQL_PASSWORD'] = os.environ.get('DB_PASSWORD')
-app.config['MYSQL_DB'] = os.environ.get('DB_NAME')
-app.config['MYSQL_PORT'] = int(os.environ.get('DB_PORT', 3306))
-app.config['MYSQL_UNIX_SOCKET'] = None  # Disable using the local socket
+app.config['MYSQL_HOST'] = os.environ.get('MYSQL_HOST', 'localhost')
+app.config['MYSQL_USER'] = os.environ.get('MYSQL_USER', 'default_user')
+app.config['MYSQL_PASSWORD'] = os.environ.get('MYSQL_PASSWORD', 'default_password')
+app.config['MYSQL_DB'] = os.environ.get('MYSQL_DB', 'default_db')
 
 # Initialize MySQL
 mysql = MySQL(app)
 
-# Function to initialize the database with the required table
-def init_db():
-    with app.app_context():
-        cur = mysql.connection.cursor()
-
-        # Create the database if it doesn't exist
-        cur.execute('CREATE DATABASE IF NOT EXISTS mydb;')
-        cur.execute('USE mydb;')
-
-        # Create the "messages" table if it doesn't exist
-        cur.execute('''
-            CREATE TABLE IF NOT EXISTS messages (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                message TEXT
-            )
-        ''')
-
-        cur.close()
-        mysql.connection.commit()
-
-# Flask route to display and submit messages
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/')
 def hello():
-    if request.method == 'POST':
-        new_message = request.form.get('new_message')
-        cur = mysql.connection.cursor()
-        cur.execute('INSERT INTO messages (message) VALUES (%s)', [new_message])
-        mysql.connection.commit()
-        cur.close()
-
     cur = mysql.connection.cursor()
     cur.execute('SELECT message FROM messages')
     messages = cur.fetchall()
     cur.close()
-
     return render_template('index.html', messages=messages)
 
-# Run database initialization and Flask app when the script is executed
-if __name__ == '__main__':
-    # Perform database initialization
-    init_db()
+@app.route('/submit', methods=['POST'])
+def submit():
+    new_message = request.form.get('new_message')
+    cur = mysql.connection.cursor()
+    cur.execute('INSERT INTO messages (message) VALUES (%s)', [new_message])
+    mysql.connection.commit()
+    cur.close()
+    return redirect(url_for('hello'))
 
-    # Run the Flask app
+if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

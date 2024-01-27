@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request
 from flask_mysqldb import MySQL
 
 app = Flask(__name__)
@@ -10,11 +10,12 @@ app.config['MYSQL_USER'] = os.environ.get('DB_USERNAME')
 app.config['MYSQL_PASSWORD'] = os.environ.get('DB_PASSWORD')
 app.config['MYSQL_DB'] = os.environ.get('DB_NAME')
 app.config['MYSQL_PORT'] = int(os.environ.get('DB_PORT', 3306))
+app.config['MYSQL_UNIX_SOCKET'] = None  # Disable using the local socket
 
 # Initialize MySQL
 mysql = MySQL(app)
 
-# Function to initialize the database with required table
+# Function to initialize the database with the required table
 def init_db():
     with app.app_context():
         cur = mysql.connection.cursor()
@@ -55,6 +56,6 @@ def hello():
 if __name__ == '__main__':
     # Perform database initialization
     init_db()
-    
+
     # Run the Flask app
     app.run(host='0.0.0.0', port=5000, debug=True)

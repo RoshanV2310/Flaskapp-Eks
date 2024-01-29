@@ -1,18 +1,34 @@
-from app import app, mysql
+import os
+import mysql.connector
 
-with app.app_context():
-    cur = mysql.connection.cursor()
-    cur.execute('CREATE DATABASE IF NOT EXISTS mydb')
-    mysql.connection.commit()
-    cur.close()
+# MySQL connection parameters
+db_config = {
+    'host': os.environ.get('DB_HOST', 'localhost'),
+    'user': os.environ.get('DB_USERNAME', 'root'),
+    'password': os.environ.get('DB_PASSWORD', ''),
+    'database': 'mysql',
+    'port': int(os.environ.get('DB_PORT', 3306)),
+}
 
-with app.app_context():
-    cur = mysql.connection.cursor()
-    cur.execute('''
-        CREATE TABLE IF NOT EXISTS mydb.messages (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            message TEXT
-        )
-    ''')
-    mysql.connection.commit()
-    cur.close()
+# Connect to MySQL
+connection = mysql.connector.connect(**db_config)
+cursor = connection.cursor()
+
+# Create the 'mydb' database if it doesn't exist
+cursor.execute('CREATE DATABASE IF NOT EXISTS mydb')
+
+# Switch to 'mydb' database
+cursor.execute('USE mydb')
+
+# Create the 'messages' table if it doesn't exist
+cursor.execute('''
+    CREATE TABLE IF NOT EXISTS messages (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        message TEXT
+    )
+''')
+
+# Commit and close the connection
+connection.commit()
+cursor.close()
+connection.close()

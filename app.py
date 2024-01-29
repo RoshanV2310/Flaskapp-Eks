@@ -8,7 +8,7 @@ app = Flask(__name__)
 app.config['MYSQL_HOST'] = os.environ.get('DB_HOST')
 app.config['MYSQL_USER'] = os.environ.get('DB_USERNAME')
 app.config['MYSQL_PASSWORD'] = os.environ.get('DB_PASSWORD')
-app.config['MYSQL_DB'] = os.environ.get('DB_NAME', 'mydb')  # Default to 'mydb'
+app.config['MYSQL_DB'] = os.environ.get('DB_NAME')
 app.config['MYSQL_PORT'] = int(os.environ.get('DB_PORT', 3306))
 
 # Initialize MySQL

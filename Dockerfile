@@ -14,14 +14,11 @@ RUN apt-get update \
 COPY requirements.txt .
 
 # Install app dependencies
-RUN pip install mysqlclient
+RUN pip install mysql-connector-python
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the rest of the application code
 COPY . .
-
-# Execute the create_database.py script during image build
-RUN python create_database.py
 
 # Specify the command to run your application
 CMD ["python", "app.py"]

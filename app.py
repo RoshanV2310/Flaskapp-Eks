@@ -14,33 +14,10 @@ app.config['MYSQL_PORT'] = int(os.environ.get('DB_PORT', 3306))
 # Initialize MySQL
 mysql = MySQL(app)
 
-# Your table name and database name
-TABLE_NAME = 'messages'
-DATABASE_NAME = 'mydb'
-
-# Create the database if it doesn't exist
-with app.app_context():
-    cur = mysql.connection.cursor()
-    cur.execute(f'CREATE DATABASE IF NOT EXISTS {DATABASE_NAME}')
-    mysql.connection.commit()
-    cur.close()
-
-# Create the messages table if it doesn't exist
-with app.app_context():
-    cur = mysql.connection.cursor()
-    cur.execute(f'''
-        CREATE TABLE IF NOT EXISTS {DATABASE_NAME}.{TABLE_NAME} (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            message TEXT
-        )
-    ''')
-    mysql.connection.commit()
-    cur.close()
-
 @app.route('/')
 def hello():
     cur = mysql.connection.cursor()
-    cur.execute(f'SELECT message FROM {DATABASE_NAME}.{TABLE_NAME}')
+    cur.execute('SELECT message FROM messages')
     messages = cur.fetchall()
     cur.close()
     return render_template('index.html', messages=messages)
@@ -49,7 +26,7 @@ def hello():
 def submit():
     new_message = request.form.get('new_message')
     cur = mysql.connection.cursor()
-    cur.execute(f'INSERT INTO {DATABASE_NAME}.{TABLE_NAME} (message) VALUES (%s)', [new_message])
+    cur.execute('INSERT INTO messages (message) VALUES (%s)', [new_message])
     mysql.connection.commit()
     cur.close()
     return redirect(url_for('hello'))

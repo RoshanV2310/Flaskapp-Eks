@@ -44,7 +44,7 @@
         }
 
         h1::after {
-            content: "Share your Feedback with the words for DevOps"; /* Add the desired text */
+            content: "Your feedback is invaluable to us."; /* Add the desired text */
             display: block;
             font-size: 16px;
             color: #666;
@@ -102,10 +102,60 @@
                 font-size: 14px;
             }
         }
+
+        .marquee-container-top {
+            width: 100%;
+            overflow: hidden;
+            position: fixed;
+            top: 0;
+            background-color: #000;
+            color: #fff;
+        }
+
+        .marquee-top {
+            white-space: nowrap;
+            animation: marquee-scroll-top 30s linear infinite; /* Increased duration for slower speed */
+            font-weight: bold; /* Make the text bold */
+        }
+
+        .marquee-container-bottom {
+            width: 100%;
+            overflow: hidden;
+            position: fixed;
+            bottom: 0;
+            background-color: #000;
+            color: #fff;
+        }
+
+        .marquee-bottom {
+            white-space: nowrap;
+            animation: marquee-scroll-bottom 30s linear infinite; /* Increased duration for slower speed */
+            font-weight: bold; /* Make the text bold */
+        }
+
+        @keyframes marquee-scroll-top {
+            from { transform: translateX(100%); }
+            to { transform: translateX(-100%); }
+        }
+
+        @keyframes marquee-scroll-bottom {
+            from { transform: translateX(-100%); }
+            to { transform: translateX(100%); }
+        }
     </style>
 </head>
 
 <body>
+    <div class="marquee-container-top">
+        <div class="marquee-top">
+            Streamlining Success in the DevOps New World
+        </div>
+    </div>
+    <div class="marquee-container-bottom">
+        <div class="marquee-bottom">
+            Roshan Vijay Jadhav
+        </div>
+    </div>
     <div class="container">
         <h1>Welcome</h1>
         {% for message in messages %}

@@ -8,4 +8,4 @@ CREATE TABLE IF NOT EXISTS messages (id INT AUTO_INCREMENT PRIMARY KEY,first_nam
 
 SHOW TABLES;
 
-ELECT * FROM messages;
+SELECT * FROM messages;

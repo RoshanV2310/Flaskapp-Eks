@@ -9,7 +9,10 @@ spec:
   type: NodePort
   selector:
     app: flaskapp
-  ports: 
-    - port: 5000
+  ports:
+    - name: http
+      port: 80
       targetPort: 5000
-      nodePort: 31231
+    - name: https
+      port: 443   
+      targetPort: 5000

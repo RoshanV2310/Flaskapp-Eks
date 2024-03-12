@@ -17,12 +17,12 @@ spec:
     spec:
       containers:
         - name: flaskapp
-          image: 331523302307.dkr.ecr.ap-south-1.amazonaws.com/flaskapp:latest
+          image: 992382511089.dkr.ecr.ap-south-1.amazonaws.com/flaskapp-demo:latest
           ports:
             - containerPort: 5000
           env:
             - name: DB_HOST
-              value: "eks-database.cvy0kesckkwc.ap-south-1.rds.amazonaws.com"            
+              value: "mysql"            
             - name: DB_PORT
               value: "3306"            
             - name: DB_NAME
